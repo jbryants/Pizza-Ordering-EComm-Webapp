@@ -1,0 +1,101 @@
+{% extends "menu/menu_base.html" %}
+
+{% block content %}
+<div class="container p-5">
+    <div class="row pl-5 pr-5 mx-auto d-flex justify-content-center">
+        <div class="card shadow text-white bg-danger w-50">
+          <div class="card-body">
+            <form>
+              {% csrf_token %}
+            <h5 class="card-title"><a class="text-white" href="{{ product.get_absolute_url }}">{{ product.name }} {{ product.category.name }}</a></h5>
+
+            <table id="card-table" class="card-text table table-hover text-white">
+              <tbody>
+                {% if product.pizza_type %}
+                  <tr>
+                    <th scope="row">Pizza type</th>
+                    <td>{{ product.pizza_type }}</td>
+                  </tr>
+                {% endif %}
+                {% if product.size %}
+                  <tr>
+                    <th scope="row">Size</th>
+                    <td>{{ product.size }}</td>
+                  </tr>
+                {% endif %}
+                {% if product.price %}
+                  <tr>
+                    <th scope="row">Price</th>
+                    <td id="{{ product.id }}" value="{{ product.price }}" data-ogprice="{{ product.price }}">${{ product.price }}</td>
+                  </tr>
+                {% endif %}
+                <tr>
+                  <th scope="row">Quantity</th>
+                  <td>
+                    <select id="quantity{{ product.id }}" data-id="{{ product.id }}" class="custom-select w-75">
+                      <option value="1" selected>1</option>
+                        {% for i in '23456789'|make_list %}
+                          <option value="{{ i }}">{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            {% if product.category.name == "Subs" %}
+            <div><span class="font-weight-bold">+0.50 dollars</span> per extra item selected.</div>
+              {% for i in '1234'|make_list %}
+                <select id="extras{{ product.id }}" data-id="{{ product.id }}" class="custom-select mb-2">
+                  <option value="" selected>Extras</option>
+                  {% for extra in extras_list %}
+                    <option value="{{ extra.id }}">{{ extra.name }}</option>
+                  {% endfor %}
+                </select>
+              {% endfor %}
+            {% endif %}
+
+            {% if product.category.name == "Pizza" %}
+
+              {% if product.name == "1 topping" %}
+                <select id="oneToppings{{ product.id }}" class="custom-select mb-2">
+                  <option value="" selected>Toppings</option>
+                  {% for topping in toppings_list %}
+                    <option value="{{ topping.id }}">{{ topping.name }}</option>
+                  {% endfor %}
+                </select>
+
+              {% elif product.name == "2 toppings" %}
+                {% for i in '12'|make_list %}
+                  <select id="twoToppings{{ product.id }}" class="custom-select mb-2">
+                    <option value="" selected>Toppings</option>
+                    {% for topping in toppings_list %}
+                      <option value="{{ topping.id }}">{{ topping.name }}</option>
+                    {% endfor %}
+                  </select>
+                {% endfor %}
+
+              {% elif product.name == "3 toppings" %}
+                {% for i in '123'|make_list %}
+                  <select id="threeToppings{{ product.id }}" class="custom-select mb-2">
+                    <option value="" selected>Toppings</option>
+                    {% for topping in toppings_list %}
+                      <option value="{{ topping.id }}">{{ topping.name }}</option>
+                    {% endfor %}
+                  </select>
+                {% endfor %}
+
+              {% else %}
+              {% endif %}
+
+            {% endif %}
+
+            </div>
+          <div class="card-footer">
+            <button type="button" id="addToCart" data-product="{{ product.id }}" data-action="add" class="btn btn-success">Add to cart</button>
+          </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

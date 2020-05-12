@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {% if category %}{{ category.name }}
+  {% elif object %}{{ object.name }}
+  {% else %}Pinocchio's Pizza & Subs{% endif %}
+{% endblock %}
+
+{% block app_content %}
+    
+    {% block content %}
+    {% endblock %}
+
+{% endblock %}

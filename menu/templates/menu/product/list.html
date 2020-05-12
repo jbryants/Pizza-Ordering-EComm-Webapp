@@ -1,0 +1,142 @@
+{% extends "menu/menu_base.html" %}
+{% load static %}
+
+{% load menu_extras %}
+
+{% block content %}
+
+  <div class="row no-gutters mt-5 ml-5 mr-5">
+    <div class="col">
+      <h4>Categories</h4>
+      <ul class="nav nav-pills flex-column shadow p-2 mb-5 bg-success border border-danger rounded w-75">
+        <li class="nav-item">
+          <a class="nav-link {% if not category %} active bg-danger{% endif %} text-light" href="{% url "menu:product_list" %}">All</a>
+        </li>
+
+        {% for c in category_list %}
+          <li class="nav-item">
+            <a class="nav-link {% if category.slug == c.slug %}active bg-danger {% endif %} text-light" href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+          </li>
+        {% endfor %}
+      </ul>    
+    </div>
+
+
+    <div class="col-9">
+
+      <h2>{% if category %}{{ category.name }}{% else %}Products{% endif %}</h2>
+
+      <div class="card-deck pb-4">
+        {% for product in product_list %}
+            <div class="card shadow text-white bg-danger">
+              <div class="card-body">
+                <form>
+                  {% csrf_token %}
+                <h5 class="card-title"><a class="text-white" href="{{ product.get_absolute_url }}">{{ product.name }} {{ product.category.name }}</a></h5>
+                
+                <table id="card-table" class="card-text table table-hover text-white">
+                  <tbody>
+                    {% if product.pizza_type %}
+                      <tr>
+                        <th scope="row">Pizza type</th>
+                        <td>{{ product.pizza_type }}</td>
+                      </tr>
+                    {% endif %}
+                    {% if product.size %}
+                      <tr>
+                        <th scope="row">Size</th>
+                        <td>{{ product.size }}</td>
+                      </tr>
+                    {% endif %}
+                    {% if product.price %}
+                      <tr>
+                        <th scope="row">Price</th>
+                        <td id="{{ product.id }}" value="{{ product.price }}" data-ogprice="{{ product.price }}">${{ product.price }}</td>
+                      </tr>
+                    {% endif %}
+                    <tr>
+                      <th scope="row">Quantity</th>
+                      <td>
+                        <select id="quantity{{ product.id }}" data-id="{{ product.id }}" class="custom-select w-75">
+                          <option value="1" selected>1</option>
+                            {% for i in '23456789'|make_list %}
+                              <option value="{{ i }}">{{ i }}</option>
+                            {% endfor %}
+                        </select>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                {% if product.category.name == "Subs" %}
+                <div><span class="font-weight-bold">+0.50 dollars</span> per extra item selected.</div>
+                  {% for i in '1234'|make_list %}
+                    <select id="extras{{ product.id }}" data-id="{{ product.id }}" class="custom-select mb-2">
+                      <option value="" selected>Extras</option>
+                      {% for extra in extras_list %}
+                        <option value="{{ extra.id }}">{{ extra.name }}</option>
+                      {% endfor %}
+                    </select>
+                  {% endfor %}
+                {% endif %}
+
+                {% if product.category.name == "Pizza" %}
+                
+                  {% if product.name == "1 topping" %}
+                    <select id="oneToppings{{ product.id }}" class="custom-select mb-2">
+                      <option value="" selected>Toppings</option>
+                      {% for topping in toppings_list %}
+                        <option value="{{ topping.id }}">{{ topping.name }}</option>
+                      {% endfor %}
+                    </select>
+
+                  {% elif product.name == "2 toppings" %}
+                    {% for i in '12'|make_list %}
+                      <select id="twoToppings{{ product.id }}" class="custom-select mb-2">
+                        <option value="" selected>Toppings</option>
+                        {% for topping in toppings_list %}
+                          <option value="{{ topping.id }}">{{ topping.name }}</option>
+                        {% endfor %}
+                      </select>
+                    {% endfor %}
+        
+                  {% elif product.name == "3 toppings" %}
+                    {% for i in '123'|make_list %}
+                      <select id="threeToppings{{ product.id }}" class="custom-select mb-2">
+                        <option value="" selected>Toppings</option>
+                        {% for topping in toppings_list %}
+                          <option value="{{ topping.id }}">{{ topping.name }}</option>
+                        {% endfor %}
+                      </select>
+                    {% endfor %}
+        
+                  {% else %}
+                  {% endif %}
+
+                {% endif %}
+
+              </div>
+              <div class="card-footer">
+                <button type="button" id="addToCart" data-product="{{ product.id }}" data-action="add" class="btn btn-success">Add to cart</button>
+              </div>
+            </div>
+          </form>
+           
+           
+            {% if forloop.counter|divisibleby:"4" %}
+                </div>
+                <div class="card-deck pb-4">
+            {% elif forloop.counter == product_list|length %}
+                {% for val in forloop.counter|diff|make_list %}
+                  <div class="card border-0"></div>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+
+      </div>
+      
+    </div>
+
+  </div>
+  
+{% endblock %}
