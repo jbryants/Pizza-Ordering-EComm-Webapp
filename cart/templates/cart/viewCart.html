@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+
+<div class="row p-5">
+     <div class="col pt-4 pl-5 pr-5">
+        <h3> Your shopping cart </h3>
+        <table class="table table-striped border border-success">
+            <thead class="bg-success text-white">
+            <tr style="border: 3px solid red;">
+                <th scope="col">Product</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Remove</th>
+                <th scope="col">Unit price</th>
+                <th scope="col">Price</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in order.get_cart_items %}
+                {% if item.quantity != 0 %}
+                <tr id="row{{ item.id }}">
+                    <td>
+                        {{ item.product }} {{ item.get_add_ons }}
+                    </td>
+                    <td>
+                        <select id="itemQuantity{{ item.id }}" class="custom-select-sm w-0 h-50 mr-1">
+                            {% for i in options_list %}
+                                {% if i == item.quantity %}
+                                    <option value="{{ item.quantity }}" selected>{{ item.quantity }}</option>
+                                {% else %}
+                                    <option value="{{ i }}">{{ i }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        <button id="update" data-id={{ item.id }} type="button" class="btn btn-primary btn-sm">Update</button>
+                    </td>
+                    <td><button id="delete" data-id={{ item.id }} type="button" class="btn btn-warning btn-sm">Remove</button></td>
+                    <td>${{ item.price }}</td>
+                    <td id="price{{ item.id }}">${{ item.get_cost }}</td>
+                </tr>    
+                {% endif %}
+            {% endfor %}
+
+            <tfoot class="bg-success text-white">
+                <tr style="border: 3px solid red;">
+                    <th scope="row" colspan=4>Totals</th>
+                    {% with cart.order.tot_quant_n_cost.1 as totalPrice %}
+                        <td id="totalPrice" class="text-monospace">${{ totalPrice }}</td>
+                    {% endwith %}
+                </tr>
+            </tfoot>
+            </tbody>
+        </table>
+
+        
+        <a href="{% url "orders:checkout" %}" id="checkoutBtn" class="float-right"><button type="button" class="btn btn-primary btn">Checkout</button></a>
+        <a href="{% url "menu:product_list" %}" class="float-right"><button type="button" class="btn btn-secondary btn mr-3">Continue shopping</button></a>
+    </div>
+</div>
+{% endblock %}
