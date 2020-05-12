@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+
+<div class="container p-5">
+    <h1>Orders</h1>
+    <ul class="list-unstyled">
+        {% for order in orders %}
+      <li class="media my-4 bg-info text-white p-5 border border-info rounded">
+        <div class="media-body">
+          <h5 class="mt-0 mb-1 bg-light rounded-pill text-dark pl-2">Order number {{ order.id }}</h5>
+            <table class="table table-borderless text-white">
+            <tbody>
+               {% for item in order.get_all_items %}
+                <tr>
+                    <td>● {{ item.product }} {{ item.get_add_ons }}</td>
+                    <td>x{{ item.quantity }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

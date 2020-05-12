@@ -1,0 +1,14 @@
+Dear {{ order.owner.first_name }},
+
+You have successfully placed an order.
+Your order ID is {{order.id}}.
+
+Your order summary :-
+{% for item in order.get_cart_items %}
+• {{ item.product }} {{ item.get_add_ons }}  x{{ item.quantity }}
+{% endfor %}
+{% with order.tot_quant_n_cost.1 as totalPrice %}
+Total price paid: ${{ totalPrice }}
+{% endwith %}
+
+Enjoy, your order will soon be at your place!

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+
+{% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="alert alert-success" role="alert">
+            {{ message }}
+        </div>
+    {% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
+        <div class="alert alert-info" role="alert">
+            {{ message }}
+        </div>
+    {% endif %}
+{% endfor %}
+
+
+{% for field in form %}
+    {% for error in field.errors %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+    {% endfor %}
+{% endfor %}
+
+
+<div class="row m-5 pl-2">
+
+    <div class="col mt-5 d-flex justify-content-center">
+        <div id="formDiv" class="mx-auto p-4 bg-light w-50 {% if isDone %}h-50{% endif %}">
+            <h3 id="checkoutHeading">Checkout</h3>
+            <div class="mt-4">
+                {% if not isDone %}
+                <form method="POST" id="address-form">
+                    {% csrf_token %}
+                    <div class="form-group w-100">
+                        <label for="inputAddress">Address</label>
+                        <input name="address" type="textarea" class="form-control">
+                    </div>
+                    <div class="form-group w-100">
+                        <label for="inputAddress">Postal code</label>
+                        <input name="postal_code" type="text" class="form-control"> 
+                    </div>
+                    <div class="form-group w-100">
+                        <label for="inputAddress">City</label>
+                        <input name="city" type="text" class="form-control"> 
+                    </div>
+                    <div class="form-group w-100">
+                        <label for="inputAddress">State</label>
+                        <input name="state" type="text" class="form-control"> 
+                    </div>
+                    <div class="form-group w-100">
+                        <label for="inputAddress">Country</label>
+                        <input name="country" type="text" class="form-control"> 
+                    </div>    
+                    <button id="addressForm" type="button" class="btn btn-primary w-100">Submit</button>
+                </form>
+                {% endif %}
+                <form action="{% url "orders:charge" %}" method="post" id="payment-form" class="{% if not isDone %}d-none{% endif %}">
+                    {% csrf_token %}
+                    <div class="form-row">
+                      <label for="card-element">Credit or debit card</label>
+                      <div id="card-element" class="w-100 mb-3">
+                        <!-- A Stripe Element will be inserted here. -->
+                      </div>
+                  
+                      <!-- Used to display form errors. -->
+                      <div id="card-errors" role="alert"></div>
+                    </div>
+                  
+                    <button class="btn btn-primary w-100">Submit Payment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col mt-4 mr-5 mx-auto d-flex flex-column-reverse justify-content-center align-self-start">
+        <div class="w-100 bg-light pt-4 pl-4 pr-5 pb-4 border-primary" style="border-bottom:4px solid;">
+            <h3 class="text-primary">Your order</h3>
+
+            <table class="table table-borderless mt-4">
+                <tbody>
+                   {% for item in cart.order.get_cart_items %}
+                    <tr>
+                        <td>{{ item.product }} {{ item.get_add_ons }}</td>
+                        <td>x{{ item.quantity }}</td>
+                        <td class="float-right pl-5 text-monospace">${{ item.get_cost }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            {% with cart.order.tot_quant_n_cost.1 as totalPrice %}
+                <p class="font-weight-bold float-right pt-4">Total: <span class="text-monospace">${{ totalPrice }}</span></p>
+            {% endwith %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

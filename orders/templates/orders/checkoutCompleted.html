@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}
+  Thank you
+{% endblock %}
+{% block app_content %}
+
+{% if does_not_exist %}
+<div class="alert alert-danger" role="alert">
+    Order you requested for is already under way.
+</div>
+{% endif %}
+
+  <div class="mt-5 pt-5 ml-5 pl-5">
+      <h1>Thank you</h1>
+      <h5>Your payment is being processed, your order number is
+      <strong>{{ order_id }}</strong>. <br>
+        You will receive a confirmation email for your order shortly.
+      </h5>
+  </div>
+
+{% endblock %}
