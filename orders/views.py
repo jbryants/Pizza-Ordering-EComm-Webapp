@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, HttpResponse, redirect
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
@@ -39,7 +39,7 @@ def checkout(request):
 
 
 @login_required(login_url='/auth/login')
-@user_passes_test(cart_check, login_url="/cart")
+@user_passes_test(cart_check, login_url="/")
 def process_form(request):
     instance = get_object_or_404(Order, owner=request.user, paid=False)
 
@@ -60,7 +60,7 @@ def process_form(request):
 
 
 @login_required(login_url='/auth/login')
-@user_passes_test(cart_check, login_url="/cart")
+@user_passes_test(cart_check, login_url="/")
 def charge(request):
     if request.method == "POST":
         order = Order.objects.get(owner=request.user, paid=False)
@@ -68,12 +68,12 @@ def charge(request):
         # launch asynchronous task
         make_payment.delay(order.id, request.POST['stripeToken'])
 
-    return redirect('orders:success')
+    return redirect('orders:done')
 
 
 @login_required(login_url='/auth/login')
-@user_passes_test(cart_check, login_url="/cart")
-def success(request):
+@user_passes_test(cart_check, login_url="/")
+def done(request):
     order = Order.objects.get(owner=request.user, paid=False)
     return render(request, "orders/checkoutCompleted.html", {"order_id": order.id})
 
