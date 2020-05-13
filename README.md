@@ -1,4 +1,4 @@
-# Project 3
+# Project 3 - Pizza
 
 Web Programming with Python and JavaScript
 
