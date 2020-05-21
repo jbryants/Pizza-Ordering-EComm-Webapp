@@ -36,7 +36,7 @@ class Product(models.Model):
         index_together = (('id', 'slug'),)
 
     def __str__(self):
-        return f'{self.name} {self.category}'
+        return f'{self.size} {self.pizza_type} {self.name} {self.category}'
 
     def get_absolute_url(self):
         return reverse('menu:product_detail', 
