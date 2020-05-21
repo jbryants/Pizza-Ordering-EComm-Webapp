@@ -116,9 +116,11 @@
                 {% endif %}
 
               </div>
-              <div class="card-footer">
-                <button type="button" id="addToCart" data-product="{{ product.id }}" data-action="add" class="btn btn-success">Add to cart</button>
-              </div>
+	      {% if user.is_authenticated %}
+              	<div class="card-footer">
+                	<button type="button" id="addToCart" data-product="{{ product.id }}" data-action="add" class="btn btn-success">Add to cart</button>
+              	</div>
+              {% endif %}
             </div>
           </form>
            

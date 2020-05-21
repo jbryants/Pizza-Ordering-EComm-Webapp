@@ -36,52 +36,9 @@ class Product(models.Model):
         index_together = (('id', 'slug'),)
 
     def __str__(self):
-        return f'{self.name} {self.category}'
+        return f'{self.size} {self.pizza_type} {self.name} {self.category}'
 
     def get_absolute_url(self):
         return reverse('menu:product_detail', 
                         args=[self.id, self.slug])
 
-
-# Create your models here.
-# class Product(models.Model):
-#     name = models.CharField(max_length=250)
-#     price = models.DecimalField(max_digits=10, decimal_places=2)
-
-#     class Meta:
-#         abstract = True
-
-
-# class Topping(Product):
-#     pass
-
-
-# class Pizza(Product):
-#     size = models.CharField(max_length=20)
-#     category = models.CharField(max_length=50)
-#     topping1 = models.ForeignKey(Topping, related_name="top1", 
-#                                 null=True, blank=True, on_delete=models.SET_NULL)
-#     topping2 = models.ForeignKey(Topping, related_name="top2",
-#                                 null=True, blank=True, on_delete=models.SET_NULL)
-#     topping3 = models.ForeignKey(Topping, related_name="top3",
-#                                 null=True, blank=True, on_delete=models.SET_NULL)
-#     topping4 = models.ForeignKey(Topping, related_name="top4",
-#                                 null=True, blank=True, on_delete=models.SET_NULL)
-#     topping5 = models.ForeignKey(Topping, related_name="top5",
-#                                 null=True, blank=True, on_delete=models.SET_NULL)
-
-
-# class Sub(Product):
-#     size = models.CharField(max_length=20)
-
-
-# class Pasta(Product):
-#     pass
-
-
-# class Salad(Product):
-#     pass
-
-
-# class DinnerPlatter(Product):
-#     size = models.CharField(max_length=20)
